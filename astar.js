@@ -1,6 +1,12 @@
 "use strict"
 
 class Astar {
+	/*
+	** @param array maze
+	** @param array start
+	** @param array end
+	** @param bool diag Move diagonally? Default is true
+	*/
 	constructor(maze, start, end, diag = true) {
 		this.maze = maze
 		this.start = start
@@ -24,7 +30,7 @@ class Astar {
 		const addNeighborsToOpenList = () => {
 			for (var x = -1; x <= 1; x++) {
 				for (var y = -1; y <= 1; y++) {
-					node = { parent_node: this.now, x: this.now.x+x, y: this.now.y+y, g: this.now.g, h: this.distance() }
+					node = { parent_node: this.now, x: this.now.x + x, y: this.now.y + y, g: this.now.g, h: this.distance() }
 					if (!this.diag && x && y) {
 						continue
 					}
@@ -41,12 +47,7 @@ class Astar {
 					}
 				}
 			}
-			open_list.sort((a, b) => { (a.g + a.h) - (b.g + b.h) })
-			/*
-			bool test(object a, object b) {
-				return (a.g + a.h) - (b.g + b.h);
-			}
-			*/
+			open_list.sort((a, b) => { (a.g + a.h) - (b.g + b.h) }) // lowest cost first
 		}
 		
 		addNeighborsToOpenList()
