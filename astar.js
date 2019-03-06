@@ -1,5 +1,11 @@
 "use strict"
 
+/*
+Implementation of the A* algorithm
+
+Runs in node or any browser except IE
+*/
+
 class Astar {
 	/*
 	** @param array maze
@@ -78,6 +84,9 @@ class Astar {
 			return Math.abs(this.now.x - this.end[0]) + Math.abs(this.now.y - this.end[1])	// return "Manhattan distance"
 		}
 	}
+	/*
+	** @return array
+	*/
 	getPath() {
 		return this.path
 	}
@@ -96,7 +105,7 @@ const maze = [
 
 const as = new Astar(maze, [0, 0], [6, 7])
 as.findPath()
-var pfad =as.getPath()
-for (var i = 0; i < pfad.length; i++) {
-	console.log("X: " + pfad[i].x + ", Y: " + pfad[i].y)
+var path = as.getPath()
+for (let i = 0; i < path.length; i++) {
+	console.log("X: " + path[i].x + ", Y: " + path[i].y)
 }
