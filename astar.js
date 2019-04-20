@@ -24,6 +24,7 @@ class Astar {
 	findPath() {
 		var open_list = [], closed_list = [this.now], node = {}
 
+		// Looks in open/closed_list for a node
 		const findNeighbor = (array, node) => {
 			for (var i = 0; i < array.length; i++) {
 				if (array[i].x == node.x && array[i].y == node.y) {
@@ -33,48 +34,50 @@ class Astar {
 			return false
 		}
 		
+		// addNeighborsToOpenList
 		const addNeighborsToOpenList = () => {
 			for (var x = -1; x <= 1; x++) {
 				for (var y = -1; y <= 1; y++) {
+					// create new node
 					node = { parent_node: this.now, x: this.now.x + x, y: this.now.y + y, g: this.now.g, h: this.distance() }
-					if (!this.diag && x && y) {
+					if (!this.diag && x && y) {	// is diagonal movement allowed?
 						continue
 					}
-					if ((x !== 0 || y !== 0)
-						&& this.now.x + x >= 0 && this.now.x + x < this.maze[0].length
+					if ((x !== 0 || y !== 0)	// not the node?
+						&& this.now.x + x >= 0 && this.now.x + x < this.maze[0].length	// in the maze?
 						&& this.now.y + y >= 0 && this.now.y + y < this.maze.length
-						&& this.maze[this.now.y + y][this.now.x + x] !== -1
-						&& !findNeighbor(open_list, node) && !findNeighbor(closed_list, node)) {
-						node.g = node.parent_node.g + 10
+						&& this.maze[this.now.y + y][this.now.x + x] !== -1				// is cell not blocked?
+						&& !findNeighbor(open_list, node) && !findNeighbor(closed_list, node)) {	// and not already in either open_list or closed_list
+						node.g = node.parent_node.g + 10	// add movement cost of 10 per step (horizontal/vertical)
 						if (x && y && this.diag) {
-							node.g = node.parent_node.g + 14
+							node.g += 4 // diagonal cost is 14 (sqrt(dx²+dy²))
 						}
-						open_list.push(node)
+						open_list.push(node)	// add to open_list
 					}
 				}
 			}
 			open_list.sort((a, b) => { (a.g + a.h) - (b.g + b.h) }) // lowest cost first
 		}
 		
+		// init open_list with all nodes around the start node
 		addNeighborsToOpenList()
 		
-		// search
-		while (this.now.x !== this.end[0] || this.now.y !== this.end[1]) {
+		// search path
+		while (this.now.x !== this.end[0] || this.now.y !== this.end[1]) { // are we finished?
 			if (!open_list.length) { // nothing to examine
 				this.path = []
-				console.log("No path!")
 				return
 			}
 			this.now = open_list.shift() // get first entry from open_list
-			closed_list.push(this.now)
-			addNeighborsToOpenList()
+			closed_list.push(this.now)	// add to closed
+			addNeighborsToOpenList()	// and look at its neighbors
 		}
 		this.path.unshift(this.now) // start with the last node
 		
 		// add all the nodes to path
 		while (this.now.x !== this.start[0] || this.now.y !== this.start[1]) {
-			this.now = this.now.parent_node
-			this.path.unshift(this.now)
+			this.now = this.now.parent_node	// get previous node
+			this.path.unshift(this.now)		// and add it as new first node in path
 		}
 	}
 	distance() {
@@ -92,6 +95,8 @@ class Astar {
 	}
 }
 
+
+// Example maze (0 = space, -1 = blocked)
 const maze = [
 	[ 0,  0,  0,  0,  0,  0,  0],
 	[-1, -1, -1, -1, -1, -1,  0],
@@ -103,9 +108,16 @@ const maze = [
 	[ 0,  0,  0,  0,  0,  0,  0]
 ]
 
+// Move from [0, 0] to [6, 7]
 const as = new Astar(maze, [0, 0], [6, 7])
 as.findPath()
 var path = as.getPath()
-for (let i = 0; i < path.length; i++) {
-	console.log("X: " + path[i].x + ", Y: " + path[i].y)
+if (path.length) {
+	// a path was found
+	for (let i = 0; i < path.length; i++) {
+		console.log("X: " + path[i].x + ", Y: " + path[i].y)
+	}
+} else {
+	// no path found
+	console.log("No path found")
 }
