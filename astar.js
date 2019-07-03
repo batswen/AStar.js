@@ -63,9 +63,8 @@ class Astar {
 		addNeighborsToOpenList()
 		
 		// search path
-		while (this.now.x !== this.end[0] || this.now.y !== this.end[1]) { // are we finished?
+		while (this.now.x !== this.end[0] || this.now.y !== this.end[1]) { // are we there yet?
 			if (!open_list.length) { // nothing to examine
-				this.path = []
 				return
 			}
 			this.now = open_list.shift() // get first entry from open_list
